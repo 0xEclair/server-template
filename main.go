@@ -1,14 +1,13 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-
-	"server-template/api"
+	"server-template/config"
+	"server-template/server"
 )
 
 func main() {
-	r := gin.Default()
-	r.POST("/", api.Index)
+	config.Init()
 
+	r := server.NewRouter()
 	r.Run(":3000")
 }
