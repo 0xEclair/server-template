@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"server-template/model"
 	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+
+	"server-template/model"
 )
 
 var Mysql *gorm.DB
