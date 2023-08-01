@@ -27,7 +27,7 @@ func (s *ImageService) List() serializer.Response {
 		Find(&inscriptions)
 
 	return serializer.Response{
-		Code: 200,
+		Code: int32(len(inscriptions)),
 		Data: inscriptions,
 	}
 }
