@@ -17,6 +17,10 @@ func Init() {
 		InitMysql()
 	}
 
+	if os.Getenv("postgres") != "" {
+		InitPostgres()
+	}
+
 	if os.Getenv("redis_addr") != "" {
 		InitRedis()
 	}

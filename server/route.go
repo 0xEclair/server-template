@@ -16,6 +16,8 @@ func NewRouter() *gin.Engine {
 	{
 		v1.GET("ping", api.Ping)
 		v1.POST("log", api.Error)
+
+		v1.GET("images", api.Image)
 	}
 
 	return r
