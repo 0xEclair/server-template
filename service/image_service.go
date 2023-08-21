@@ -7,8 +7,9 @@ import (
 )
 
 type ImageService struct {
-	Offset int `form:"offset" json:"offset"`
-	Limit  int `form:"limit" json:"limit"`
+	Offset int    `form:"offset" json:"offset"`
+	Limit  int    `form:"limit" json:"limit"`
+	Type   string `form:"type" json:"type"`
 }
 
 func (s *ImageService) List() serializer.Response {
@@ -20,14 +21,22 @@ func (s *ImageService) List() serializer.Response {
 		"image/png",
 		"image/svg+xml",
 		"image/webp",
+		"image/svg+xml;charset=utf-8",
 	}
-	config.Postgres.Where("content_type in ? and id > ?", typeList, 0).
-		Offset(s.Offset).
+
+	config.Postgres.Select("id", "inscription_id", "address", "content", "content_type").
+		Where("id >= ? and content_type in ?", 0, typeList).
+		Offset(s.Offset).Order("id asc").
 		Limit(s.Limit).
 		Find(&inscriptions)
 
+	var cnt int64
+	config.Postgres.Model(&model.Inscription{}).
+		Where("id >= ? and content_type in ?", 0, typeList).
+		Count(&cnt)
+
 	return serializer.Response{
-		Code: int32(len(inscriptions)),
-		Data: inscriptions,
+		Code: 200,
+		Data: serializer.BuildImageListResponse(cnt, inscriptions),
 	}
 }

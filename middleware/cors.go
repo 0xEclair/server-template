@@ -16,6 +16,7 @@ func Cors() gin.HandlerFunc {
 			//http://www.example.com
 			"http://127.0.0.1",
 			"http://localhost",
+			"*",
 		}
 	} else {
 		config.AllowOriginFunc = func(origin string) bool {
@@ -27,7 +28,7 @@ func Cors() gin.HandlerFunc {
 				return true
 			}
 
-			return false
+			return true
 		}
 	}
 	config.AllowCredentials = true
