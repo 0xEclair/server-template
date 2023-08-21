@@ -65,3 +65,25 @@ func Inscription(c *gin.Context) {
 		c.JSON(200, err.Error())
 	}
 }
+
+// @BasePath /api/v1
+
+// AddressByCondition godoc
+// @Summary 域名, number, 铭文id查铭文信息
+// @Schemes
+// @Description inscription detail
+// @Tags other
+// @Accept application/json
+// @Produce application/json
+// @Param p path string true "任意参数"
+// @Success 200 {object} serializer.Response{data=model.Inscription}
+// @Router /address/{p} [get]
+func AddressByCondition(c *gin.Context) {
+	var service service.AddressByConditionService
+	if err := c.ShouldBindUri(&service); err == nil {
+		res := service.Find()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, err.Error())
+	}
+}

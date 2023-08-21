@@ -1,7 +1,9 @@
 package service
 
 import (
+	"math/big"
 	"strconv"
+	"strings"
 
 	"server-template/config"
 	"server-template/model"
@@ -32,4 +34,45 @@ func (s *InscriptionService) Find() serializer.Response {
 		Code: 200,
 		Data: serializer.BuildInscriptionResponse(inscription),
 	}
+}
+
+type AddressByConditionService struct {
+	Condition string `uri:"condition"`
+}
+
+func (s *AddressByConditionService) Find() serializer.Response {
+	t := s.Check()
+	cond := s.Condition
+	var inscription model.Inscription
+
+	if t == "id" {
+		config.Postgres.Where("id = ?", cond).First(&inscription)
+	} else if t == "content" {
+		config.Postgres.Where("id >= 0 and content = ?", cond).Order("id asc").Limit(1).First(&inscription)
+	} else {
+		config.Postgres.Where("inscription_id = ?", cond).First(&inscription)
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Data: serializer.BuildInscriptionWithoutContentResponse(inscription),
+	}
+}
+
+func (s *AddressByConditionService) Check() string {
+	cond := s.Condition
+	_, ok := new(big.Int).SetString(cond, 10)
+	if ok {
+		return "id"
+	}
+
+	if strings.Contains(cond, ".") {
+		domain := strings.Split(cond, ".")
+		if domain[1] == "sats" {
+			return "sats"
+		}
+		return "content"
+	}
+
+	return "inscription_id"
 }

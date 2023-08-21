@@ -43,7 +43,7 @@ func (s *BitmapListService) List() serializer.Response {
 	config.Postgres.Table("bitmap_holder").Where("address = ?", s.Address).Count(&cnt)
 	return serializer.Response{
 		Code: 200,
-		Data: serializer.BuildBitmapListResponse(bitmaps),
+		Data: serializer.BuildBitmapListWithCntResponse(cnt, bitmaps),
 	}
 }
 

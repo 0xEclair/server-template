@@ -22,6 +22,11 @@ func BuildBitmapResponse(inscription model.Bitmap) *BitmapResponse {
 	}
 }
 
+type BitmapListResponse struct {
+	Count int64             `json:"count"`
+	Items []*BitmapResponse `json:"items"`
+}
+
 func BuildBitmapListResponse(items []model.Bitmap) []*BitmapResponse {
 	var inscriptions []*BitmapResponse
 	for _, item := range items {
@@ -30,4 +35,17 @@ func BuildBitmapListResponse(items []model.Bitmap) []*BitmapResponse {
 	}
 
 	return inscriptions
+}
+
+func BuildBitmapListWithCntResponse(cnt int64, items []model.Bitmap) *BitmapListResponse {
+	var inscriptions []*BitmapResponse
+	for _, item := range items {
+		inscription := BuildBitmapResponse(item)
+		inscriptions = append(inscriptions, inscription)
+	}
+
+	return &BitmapListResponse{
+		Count: cnt,
+		Items: inscriptions,
+	}
 }

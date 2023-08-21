@@ -21,6 +21,14 @@ type VerifiedInscriptionResponse struct {
 	Verified      bool   `json:"verified"`
 }
 
+func BuildInscriptionWithoutContentResponse(inscription model.Inscription) *InscriptionResponse {
+	return &InscriptionResponse{
+		Id:            inscription.Id,
+		InscriptionId: inscription.InscriptionId,
+		Address:       inscription.Address,
+	}
+}
+
 func BuildInscriptionResponse(inscription model.Inscription) *InscriptionResponse {
 	return &InscriptionResponse{
 		Id:            inscription.Id,

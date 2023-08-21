@@ -45,6 +45,32 @@ definitions:
 info:
   contact: {}
 paths:
+  /address/{p}:
+    get:
+      consumes:
+      - application/json
+      description: inscription detail
+      parameters:
+      - description: 任意参数
+        in: path
+        name: p
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/serializer.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Inscription'
+              type: object
+      summary: 域名, number, 铭文id查铭文信息
+      tags:
+      - other
   /avatar:
     get:
       consumes:
