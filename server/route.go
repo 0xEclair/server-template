@@ -2,16 +2,19 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"server-template/api"
-	"server-template/middleware"
+	"server-template/docs"
 )
 
 func NewRouter() *gin.Engine {
 	r := gin.Default()
 
-	r.Use(middleware.Cors())
+	//r.Use(middleware.Cors())
 
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
 	{
 		v1.GET("ping", api.Ping)
@@ -33,6 +36,8 @@ func NewRouter() *gin.Engine {
 		bitmap.GET("/:address", api.BitmapListByAddress)
 		bitmap.GET("/rank", api.BitmapRank)
 	}
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	return r
 }

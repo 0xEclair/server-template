@@ -10,6 +10,6 @@ type Bitmap struct {
 }
 
 type BitmapRank struct {
-	Address string
-	Number  int32
+	Address string `json:"address"`
+	Number  int32  `json:"number"`
 }

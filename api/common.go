@@ -20,6 +20,19 @@ func Error(c *gin.Context) {
 	}
 }
 
+// @BasePath /api/v1
+
+// Image godoc
+// @Summary 查询所有图片
+// @Schemes
+// @Description query all images
+// @Tags other
+// @Accept application/json
+// @Produce application/json
+// @Param offset query int32 false "offset" default(0)
+// @Param limit query int32 false "limit" default(0)
+// @Success 200 {object} serializer.Response{data=[]model.Inscription}
+// @Router /images [get]
 func Image(c *gin.Context) {
 	var service service.ImageService
 	if err := c.ShouldBind(&service); err == nil {
@@ -30,6 +43,19 @@ func Image(c *gin.Context) {
 	}
 }
 
+// @BasePath /api/v1
+
+// InscriptionDetail godoc
+// @Summary 铭文信息
+// @Schemes
+// @Description inscription detail
+// @Tags other
+// @Accept application/json
+// @Produce application/json
+// @Param number query int32 false "number" default(0)
+// @Param id query string false "id"
+// @Success 200 {object} serializer.Response{data=model.Inscription}
+// @Router /inscription [get]
 func Inscription(c *gin.Context) {
 	var service service.InscriptionService
 	if err := c.ShouldBind(&service); err == nil {

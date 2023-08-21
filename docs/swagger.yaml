@@ -1,0 +1,289 @@
+definitions:
+  model.Bitmap:
+    properties:
+      address:
+        type: string
+      bitmapId:
+        type: integer
+      genesisHeight:
+        type: integer
+      id:
+        type: integer
+      inscriptionId:
+        type: string
+      timestamp:
+        type: integer
+    type: object
+  model.BitmapRank:
+    properties:
+      address:
+        type: string
+      number:
+        type: integer
+    type: object
+  model.Inscription:
+    properties:
+      address:
+        type: string
+      content:
+        type: string
+      contentType:
+        type: string
+      id:
+        type: integer
+      inscriptionId:
+        type: string
+    type: object
+  serializer.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      err:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /avatar:
+    get:
+      consumes:
+      - application/json
+      description: query all avatars
+      parameters:
+      - description: address
+        in: query
+        name: address
+        required: true
+        type: string
+      - default: 0
+        description: offset
+        in: query
+        name: offset
+        type: integer
+      - default: 0
+        description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/serializer.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Inscription'
+                  type: array
+              type: object
+      summary: 地址所有图片信息
+      tags:
+      - other
+  /collection/bitmap/:address:
+    get:
+      consumes:
+      - application/json
+      description: bitmap list of address
+      parameters:
+      - description: address
+        in: query
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/serializer.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Bitmap'
+                  type: array
+              type: object
+      summary: 地址下所有bitmap
+      tags:
+      - bitmap
+  /collection/bitmap/count:
+    get:
+      consumes:
+      - application/json
+      description: bitmap count
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/serializer.Response'
+            - properties:
+                data:
+                  type: integer
+              type: object
+      summary: bitmap总数
+      tags:
+      - bitmap
+  /collection/bitmap/detail:
+    get:
+      consumes:
+      - application/json
+      description: bitmap detail
+      parameters:
+      - collectionFormat: csv
+        description: id
+        in: query
+        items:
+          type: integer
+        name: id
+        required: true
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/serializer.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Bitmap'
+                  type: array
+              type: object
+      summary: bitmap信息
+      tags:
+      - bitmap
+  /collection/bitmap/rank:
+    get:
+      consumes:
+      - application/json
+      description: rank for bitmap holders
+      parameters:
+      - default: 0
+        description: offset
+        in: query
+        name: offset
+        type: integer
+      - default: 20
+        description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/serializer.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.BitmapRank'
+                  type: array
+              type: object
+      summary: holders排名
+      tags:
+      - bitmap
+  /domain:
+    get:
+      consumes:
+      - application/json
+      description: query all domains
+      parameters:
+      - description: address
+        in: query
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/serializer.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Inscription'
+                  type: array
+              type: object
+      summary: 地址所有域名信息
+      tags:
+      - other
+  /images:
+    get:
+      consumes:
+      - application/json
+      description: query all images
+      parameters:
+      - default: 0
+        description: offset
+        in: query
+        name: offset
+        type: integer
+      - default: 0
+        description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/serializer.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Inscription'
+                  type: array
+              type: object
+      summary: 查询所有图片
+      tags:
+      - other
+  /inscription:
+    get:
+      consumes:
+      - application/json
+      description: inscription detail
+      parameters:
+      - default: 0
+        description: number
+        in: query
+        name: number
+        type: integer
+      - description: id
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/serializer.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Inscription'
+              type: object
+      summary: 铭文信息
+      tags:
+      - other
+swagger: "2.0"
