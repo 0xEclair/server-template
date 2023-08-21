@@ -120,6 +120,16 @@ paths:
         name: address
         required: true
         type: string
+      - default: 0
+        description: offset
+        in: query
+        name: offset
+        type: integer
+      - default: 20
+        description: limit
+        in: query
+        name: limit
+        type: integer
       produces:
       - application/json
       responses:
