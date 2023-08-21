@@ -59,6 +59,8 @@ func BitmapCount(c *gin.Context) {
 // @Accept application/json
 // @Produce application/json
 // @Param address query string true "address"
+// @Param offset query int32 false "offset" default(0)
+// @Param limit query int32 false "limit" default(20)
 // @Success 200 {object} serializer.Response{data=[]model.Bitmap}
 // @Router /collection/bitmap/:address [get]
 func BitmapListByAddress(c *gin.Context) {

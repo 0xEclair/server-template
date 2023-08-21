@@ -33,11 +33,13 @@ func (s *BitmapCountService) Count() serializer.Response {
 
 type BitmapListService struct {
 	Address string `json:"address" form:"address" binding:"required"`
+	Offset  int    `form:"offset,default=0" json:"offset"`
+	Limit   int    `form:"limit,default=20" json:"limit"`
 }
 
 func (s *BitmapListService) List() serializer.Response {
 	var bitmaps []model.Bitmap
-	config.Postgres.Table("bitmap_holder").Where("address = ?", s.Address).Find(&bitmaps)
+	config.Postgres.Table("bitmap_holder").Where("address = ?", s.Address).Order("bitmap_id").Offset(s.Offset).Limit(s.Limit).Find(&bitmaps)
 
 	var cnt int64
 	config.Postgres.Table("bitmap_holder").Where("address = ?", s.Address).Count(&cnt)
