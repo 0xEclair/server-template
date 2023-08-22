@@ -2,6 +2,7 @@ package service
 
 import (
 	"math/big"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -41,6 +42,14 @@ type AddressByConditionService struct {
 }
 
 func (s *AddressByConditionService) Find() serializer.Response {
+	if regexp.MustCompile(`^(bc1|[13])[a-zA-Z0-9]*$`).MatchString(s.Condition) {
+		var inscription model.Inscription
+		inscription.Address = s.Condition
+		return serializer.Response{
+			Code: 200,
+			Data: serializer.BuildInscriptionWithoutContentResponse(inscription),
+		}
+	}
 	t := s.Check()
 	cond := s.Condition
 	var inscription model.Inscription
