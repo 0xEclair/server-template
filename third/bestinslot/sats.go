@@ -10,7 +10,7 @@ import (
 
 func AddressBySats(sats string) (string, error) {
 	u := Base + "/sats/forward_lookup?sats_name=" + url.QueryEscape(sats)
-	resp, err := resty.New().SetDebug(true).R().
+	resp, err := resty.New().R().
 		SetHeader("x-api-key", os.Getenv("bestinslot")).
 		Get(u)
 	if err != nil {
