@@ -37,6 +37,11 @@ func NewRouter() *gin.Engine {
 		bitmap.GET("/rank", api.BitmapRank)
 	}
 
+	brc20 := v1.Group("/brc20")
+	{
+		brc20.GET("/balance", api.BRC20Balance)
+	}
+
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	return r

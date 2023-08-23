@@ -13,6 +13,6 @@ type BRC20Response struct {
 type BRC20 struct {
 	Ticker              string `json:"ticker"`
 	OverallBalance      string `json:"overall_balance"`
-	AvaliableBalance    string `json:"avaliable_balance"`
-	TransferableBalance string `json:"transferable_balance"`
+	AvaliableBalance    string `json:"available_balance"`
+	TransferableBalance string `json:"transferrable_balance"`
 }
