@@ -2,15 +2,17 @@ package bestinslot
 
 import (
 	"encoding/json"
+	"net/url"
 	"os"
 
 	"github.com/go-resty/resty/v2"
 )
 
 func AddressBySats(sats string) (string, error) {
-	resp, err := resty.New().R().
+	u := Base + "/sats/forward_lookup?sats_name=" + url.QueryEscape(sats)
+	resp, err := resty.New().SetDebug(true).R().
 		SetHeader("x-api-key", os.Getenv("bestinslot")).
-		Get(Base + "/sats/forward_lookup?sats_name=" + sats)
+		Get(u)
 	if err != nil {
 		return "", err
 	}
