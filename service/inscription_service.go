@@ -43,7 +43,7 @@ type AddressByConditionService struct {
 }
 
 func (s *AddressByConditionService) Find() serializer.Response {
-	if regexp.MustCompile(`^(bc1|[13])[a-zA-Z0-9]*$`).MatchString(s.Condition) {
+	if regexp.MustCompile(`^(bc1|[13])[a-zA-Z0-9]{20,}$`).MatchString(s.Condition) {
 		var inscription model.Inscription
 		inscription.Address = s.Condition
 		return serializer.Response{
