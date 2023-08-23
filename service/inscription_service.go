@@ -9,6 +9,7 @@ import (
 	"server-template/config"
 	"server-template/model"
 	"server-template/serializer"
+	"server-template/third/bestinslot"
 )
 
 type InscriptionService struct {
@@ -58,6 +59,9 @@ func (s *AddressByConditionService) Find() serializer.Response {
 		config.Postgres.Where("id = ?", cond).First(&inscription)
 	} else if t == "content" {
 		config.Postgres.Where("id >= 0 and content = ?", cond).Order("id asc").Limit(1).First(&inscription)
+	} else if t == "sats" {
+		addr, _ := bestinslot.AddressBySats(cond)
+		inscription.Address = addr
 	} else {
 		config.Postgres.Where("inscription_id = ?", cond).First(&inscription)
 	}

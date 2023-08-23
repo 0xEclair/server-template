@@ -8,16 +8,16 @@ type InscriptionResponse struct {
 	Id            int64  `json:"id"`
 	InscriptionId string `json:"inscription_id"`
 	Address       string `json:"address"`
-	Content       string `json:"content"`
-	ContentType   string `json:"content_type"`
+	Content       string `json:"content,omitempty"`
+	ContentType   string `json:"content_type,omitempty"`
 }
 
 type VerifiedInscriptionResponse struct {
 	Id            int64  `json:"id"`
 	InscriptionId string `json:"inscription_id"`
 	Address       string `json:"address"`
-	Content       string `json:"content"`
-	ContentType   string `json:"content_type"`
+	Content       string `json:"content,omitempty"`
+	ContentType   string `json:"content_type,omitempty"`
 	Verified      bool   `json:"verified"`
 }
 
