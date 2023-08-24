@@ -19,6 +19,12 @@ func Content(c *gin.Context) {
 
 func Address(c *gin.Context) {
 	var service service.ListInscriptionsService
+	if err := c.ShouldBindUri(&service); err == nil {
+
+	} else {
+		c.JSON(200, err.Error())
+	}
+
 	if err := c.ShouldBind(&service); err == nil {
 		res := service.List()
 		c.JSON(200, res)

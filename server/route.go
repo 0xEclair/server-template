@@ -23,7 +23,7 @@ func NewRouter() *gin.Engine {
 		v1.GET("images", api.Image)
 		v1.GET("inscription", api.Inscription)
 		v1.GET("content", api.Content)
-		v1.GET("address", api.Address)
+		v1.GET("/:address", api.Address)
 		v1.GET("/address/:condition", api.AddressByCondition)
 		v1.GET("avatar", api.Avatar)
 		v1.GET("domain", api.Domain)
