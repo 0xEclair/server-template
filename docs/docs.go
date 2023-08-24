@@ -16,6 +16,64 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/:address": {
+            "get": {
+                "description": "inscriptions of address",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "other"
+                ],
+                "summary": "地址下所有铭文",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "address",
+                        "name": "address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 0,
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "limit",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/serializer.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/serializer.ImageListResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/address/{p}": {
             "get": {
                 "description": "inscription detail",
@@ -139,7 +197,7 @@ const docTemplate = `{
                         "type": "string",
                         "description": "address",
                         "name": "address",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     },
                     {
@@ -525,6 +583,40 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "inscriptionId": {
+                    "type": "string"
+                }
+            }
+        },
+        "serializer.ImageListResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/serializer.InscriptionResponse"
+                    }
+                }
+            }
+        },
+        "serializer.InscriptionResponse": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "content_type": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "inscription_id": {
                     "type": "string"
                 }
             }

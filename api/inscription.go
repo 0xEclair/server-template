@@ -17,6 +17,20 @@ func Content(c *gin.Context) {
 	}
 }
 
+// @BasePath /api/v1
+
+// 地址下所有铭文 godoc
+// @Summary 地址下所有铭文
+// @Schemes
+// @Description inscriptions of address
+// @Tags other
+// @Accept application/json
+// @Produce application/json
+// @Param address path string true "address"
+// @Param offset query int32 false "offset" default(0)
+// @Param limit query int32 false "limit" default(20)
+// @Success 200 {object} serializer.Response{data=serializer.ImageListResponse}
+// @Router /:address [get]
 func Address(c *gin.Context) {
 	var service service.ListInscriptionsService
 	if err := c.ShouldBindUri(&service); err == nil {

@@ -34,6 +34,28 @@ definitions:
       inscriptionId:
         type: string
     type: object
+  serializer.ImageListResponse:
+    properties:
+      count:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/serializer.InscriptionResponse'
+        type: array
+    type: object
+  serializer.InscriptionResponse:
+    properties:
+      address:
+        type: string
+      content:
+        type: string
+      content_type:
+        type: string
+      id:
+        type: integer
+      inscription_id:
+        type: string
+    type: object
   serializer.Response:
     properties:
       code:
@@ -45,6 +67,42 @@ definitions:
 info:
   contact: {}
 paths:
+  /:address:
+    get:
+      consumes:
+      - application/json
+      description: inscriptions of address
+      parameters:
+      - description: address
+        in: path
+        name: address
+        required: true
+        type: string
+      - default: 0
+        description: offset
+        in: query
+        name: offset
+        type: integer
+      - default: 20
+        description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/serializer.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/serializer.ImageListResponse'
+              type: object
+      summary: 地址下所有铭文
+      tags:
+      - other
   /address/{p}:
     get:
       consumes:
@@ -116,7 +174,7 @@ paths:
       description: bitmap list of address
       parameters:
       - description: address
-        in: query
+        in: path
         name: address
         required: true
         type: string
