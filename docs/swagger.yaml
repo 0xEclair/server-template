@@ -67,7 +67,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /:address:
+  /{address}:
     get:
       consumes:
       - application/json
@@ -167,7 +167,7 @@ paths:
       summary: 地址所有图片信息
       tags:
       - other
-  /collection/bitmap/:address:
+  /collection/bitmap/{address}:
     get:
       consumes:
       - application/json

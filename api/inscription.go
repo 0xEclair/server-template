@@ -30,7 +30,7 @@ func Content(c *gin.Context) {
 // @Param offset query int32 false "offset" default(0)
 // @Param limit query int32 false "limit" default(20)
 // @Success 200 {object} serializer.Response{data=serializer.ImageListResponse}
-// @Router /:address [get]
+// @Router /{address} [get]
 func Address(c *gin.Context) {
 	var service service.ListInscriptionsService
 	if err := c.ShouldBindUri(&service); err == nil {
