@@ -5,8 +5,8 @@ services:
     image: registry.ap-southeast-1.aliyuncs.com/ord/server-template:bitmap-server
     restart: always
     environment:
-      - postgres: ""
-      - bestinslot: ""
+      postgres: ""
+      bestinslot: ""
     ports:
       - 3457:3000
     extra_hosts:
