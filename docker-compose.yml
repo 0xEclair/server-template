@@ -5,6 +5,6 @@ services:
     image: registry.ap-southeast-1.aliyuncs.com/ord/server-template:bitmap-server
     restart: always
     ports:
-      - 3456:3000
+      - 3457:3000
     extra_hosts:
       - host.docker.internal:host-gateway
