@@ -43,6 +43,16 @@ func Image(c *gin.Context) {
 	}
 }
 
+func Imagev2(c *gin.Context) {
+	var service service.ImageService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.ListWithHTML()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, err.Error())
+	}
+}
+
 // @BasePath /api/v1
 
 // InscriptionDetail godoc
