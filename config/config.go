@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -10,7 +9,7 @@ import (
 
 func Init() {
 	if err := godotenv.Load(); err != nil {
-		log.Fatal(fmt.Sprintf("Load .env error: %v", err))
+		log.Printf("Load .env error: %v\n", err)
 	}
 
 	if os.Getenv("mysql") != "" {
