@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  bitmap-server:
+    image: registry.ap-southeast-1.aliyuncs.com/ord/server-template:bitmap-server
+    restart: always
+    ports:
+      - 3457:3000
+    extra_hosts:
+      - host.docker.internal:host-gateway
