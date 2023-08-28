@@ -71,6 +71,16 @@ func Avatar(c *gin.Context) {
 	}
 }
 
+func Avatarv2(c *gin.Context) {
+	var service service.AvatarService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.ListWithHTML()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, err.Error())
+	}
+}
+
 // @BasePath /api/v1
 
 // Domain godoc
