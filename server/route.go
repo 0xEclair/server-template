@@ -7,12 +7,13 @@ import (
 
 	"server-template/api"
 	"server-template/docs"
+	"server-template/middleware"
 )
 
 func NewRouter() *gin.Engine {
 	r := gin.Default()
 
-	//r.Use(middleware.Cors())
+	r.Use(middleware.Cors())
 
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	v1 := r.Group("/api/v1")
