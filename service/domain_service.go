@@ -5,6 +5,7 @@ import (
 	"server-template/config"
 	"server-template/model"
 	"server-template/serializer"
+	"strconv"
 	"strings"
 )
 
@@ -138,6 +139,26 @@ func (s *DomainService) List() serializer.Response {
 		if strings.HasSuffix(inscription.Content, ".ord") {
 			var insc model.Inscription
 			config.Postgres.Select("id").Where("content = ?", inscription.Content).First(&insc)
+			if inscription.Id == insc.Id {
+				verifiedInscriptions = append(verifiedInscriptions, inscription)
+			} else {
+				unverifiedInscriptions = append(unverifiedInscriptions, inscription)
+			}
+
+			continue
+		}
+
+		if strings.HasSuffix(inscription.Content, ".pokemon") {
+			domains := strings.Split(inscription.Content, ".")
+			i, err := strconv.ParseInt(domains[0], 10, 32)
+			if err != nil {
+				continue
+			}
+			if i < 1 || i > 1010 {
+				continue
+			}
+			var insc model.Inscription
+			config.Postgres.Select("id").Where("content = ? and id > 0", inscription.Content).First(&insc)
 			if inscription.Id == insc.Id {
 				verifiedInscriptions = append(verifiedInscriptions, inscription)
 			} else {
