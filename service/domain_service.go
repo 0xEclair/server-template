@@ -1,12 +1,13 @@
 package service
 
 import (
-	"encoding/json"
+	"strconv"
+	"strings"
+
 	"server-template/config"
 	"server-template/model"
 	"server-template/serializer"
-	"strconv"
-	"strings"
+	"server-template/third/bestinslot"
 )
 
 type BRC20 struct {
@@ -35,34 +36,35 @@ func (s *DomainService) List() serializer.Response {
 	var verifiedInscriptions []model.Inscription
 	var unverifiedInscriptions []model.Inscription
 	for _, inscription := range tempInscriptions {
-		var sats SATS
-		err := json.Unmarshal([]byte(inscription.Content), &sats)
-		if err != nil {
+		// var sats SATS
+		// err := json.Unmarshal([]byte(inscription.Content), &sats)
+		// if err != nil {
 
-		} else {
-			if sats.P == "sns" && sats.Op == "reg" && strings.HasSuffix(sats.Name, ".sats") {
-				var insc model.Inscription
-				config.Postgres.Select("id").Where("content in ?", []string{inscription.Content, sats.Name}).First(&insc)
-				inscription.Content = sats.Name
-				if inscription.Id == insc.Id {
-					verifiedInscriptions = append(verifiedInscriptions, inscription)
-				} else {
-					unverifiedInscriptions = append(unverifiedInscriptions, inscription)
-				}
+		// } else {
+		// 	if sats.P == "sns" && sats.Op == "reg" && strings.HasSuffix(sats.Name, ".sats") {
+		// 		var insc model.Inscription
+		// 		config.Postgres.Select("id").Where("content in ?", []string{inscription.Content, sats.Name}).First(&insc)
+		// 		inscription.Content = sats.Name
+		// 		if inscription.Id == insc.Id {
+		// 			verifiedInscriptions = append(verifiedInscriptions, inscription)
+		// 		} else {
+		// 			unverifiedInscriptions = append(unverifiedInscriptions, inscription)
+		// 		}
 
-				continue
-			}
-		}
+		// 		continue
+		// 	}
+		// }
 
 		if strings.HasSuffix(inscription.Content, ".sats") {
-			var insc model.Inscription
-			config.Postgres.Select("id").Where("content = ?", inscription.Content).First(&insc)
-			if inscription.Id == insc.Id {
-				verifiedInscriptions = append(verifiedInscriptions, inscription)
-			} else {
-				unverifiedInscriptions = append(unverifiedInscriptions, inscription)
-			}
+			// var insc model.Inscription
+			// config.Postgres.Select("id").Where("content = ?", inscription.Content).First(&insc)
+			// if inscription.Id == insc.Id {
+			// 	verifiedInscriptions = append(verifiedInscriptions, inscription)
+			// } else {
+			// 	unverifiedInscriptions = append(unverifiedInscriptions, inscription)
+			// }
 
+			// skip .sats
 			continue
 		}
 
@@ -168,6 +170,22 @@ func (s *DomainService) List() serializer.Response {
 			continue
 		}
 	}
+
+	sats, err := bestinslot.WalletSats(s.Address)
+	if err != nil {
+		// todo log
+	}
+
+	for _, satsname := range sats {
+		inscription := model.Inscription{
+			Id:            satsname.Id,
+			InscriptionId: satsname.InscriptionId,
+			Content:       satsname.Name,
+		}
+
+		verifiedInscriptions = append(verifiedInscriptions, inscription)
+	}
+
 	return serializer.Response{
 		Code: 200,
 		Data: serializer.BuildDomainListResponse(verifiedInscriptions, unverifiedInscriptions),

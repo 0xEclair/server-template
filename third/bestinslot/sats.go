@@ -25,3 +25,21 @@ func AddressBySats(sats string) (string, error) {
 
 	return res.Data["wallet"], nil
 }
+
+func WalletSats(address string) ([]Sats, error) {
+	u := Base + "/wallet/sats_names?address=" + address
+	resp, err := resty.New().R().
+		SetHeader("x-api-key", os.Getenv("bestinslot")).
+		Get(u)
+	if err != nil {
+		return nil, err
+	}
+
+	var res WalletSatsResponse
+	err = json.Unmarshal(resp.Body(), &res)
+	if err != nil {
+		return nil, err
+	}
+
+	return res.Data, nil
+}
