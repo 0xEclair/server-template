@@ -150,6 +150,19 @@ func (s *DomainService) List() serializer.Response {
 			continue
 		}
 
+		// ₿
+		if strings.HasSuffix(inscription.Content, ".₿") {
+			var insc model.Inscription
+			config.Postgres.Select("id").Where("content = ?", inscription.Content).First(&insc)
+			if inscription.Id == insc.Id {
+				verifiedInscriptions = append(verifiedInscriptions, inscription)
+			} else {
+				unverifiedInscriptions = append(unverifiedInscriptions, inscription)
+			}
+
+			continue
+		}
+
 		if strings.HasSuffix(inscription.Content, ".pokemon") {
 			domains := strings.Split(inscription.Content, ".")
 			i, err := strconv.ParseInt(domains[0], 10, 32)
