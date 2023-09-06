@@ -10,7 +10,7 @@ import (
 func Cors() gin.HandlerFunc {
 	config := cors.DefaultConfig()
 	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
-	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Cookie"}
+	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Cookie", "Client-Agent"}
 	if gin.Mode() == gin.ReleaseMode {
 		config.AllowOrigins = []string{
 			//http://www.example.com
