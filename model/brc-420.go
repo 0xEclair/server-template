@@ -7,3 +7,8 @@ type Asset struct {
 	Type          string
 	Category      string
 }
+
+type AssetWithOss struct {
+	Asset
+	OssUrl string
+}

@@ -9,7 +9,7 @@ import (
 func AssetsListByAddress(c *gin.Context) {
 	var service service.AssetsListService
 	if err := c.ShouldBind(&service); err == nil {
-		res := service.List()
+		res := service.ListWithOss()
 		c.JSON(200, res)
 	} else {
 		c.JSON(200, err.Error())

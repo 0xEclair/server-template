@@ -36,3 +36,25 @@ func (s *AssetsListService) List() serializer.Response {
 		Data: serializer.BuildAssetsListWithCntResponse(cnt, assets),
 	}
 }
+
+func (s *AssetsListService) ListWithOss() serializer.Response {
+	var assets []model.Asset
+
+	w := fmt.Sprintf("assets.address = '%s' and assets.id >= 0 and inscriptions.oss_url is not null", s.Address)
+	if s.Type != "" {
+		w = fmt.Sprintf("%s and type = '%s'", w, s.Type)
+	}
+
+	if s.Category != "" {
+		w = fmt.Sprintf("%s and category = '%s'", w, s.Category)
+	}
+
+	config.Postgres.Debug().Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category").Joins("left join inscriptions on assets.id=inscriptions.id").Where(w).Order("id").Offset(s.Offset).Limit(s.Limit).Find(&assets)
+
+	var cnt int64
+	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category").Joins("left join inscriptions on assets.id=inscriptions.id").Where(w).Count(&cnt)
+	return serializer.Response{
+		Code: 200,
+		Data: serializer.BuildAssetsListWithCntResponse(cnt, assets),
+	}
+}
