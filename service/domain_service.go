@@ -1,6 +1,7 @@
 package service
 
 import (
+	"math/big"
 	"strconv"
 	"strings"
 
@@ -202,5 +203,165 @@ func (s *DomainService) List() serializer.Response {
 	return serializer.Response{
 		Code: 200,
 		Data: serializer.BuildDomainListResponse(verifiedInscriptions, unverifiedInscriptions),
+	}
+}
+
+func (s *DomainService) ListWithBitmap() serializer.Response {
+	var tempInscriptions []model.Inscription
+	config.Postgres.Select("id", "inscription_id", "content").Where("address = ? and content_type in ?", s.Address, []string{"text/plain", "text/plain;charset=utf-8"}).Order("id asc").Find(&tempInscriptions)
+
+	var verifiedInscriptions []model.Inscription
+	var unverifiedInscriptions []model.Inscription
+	for _, inscription := range tempInscriptions {
+		if strings.HasSuffix(inscription.Content, ".sats") {
+			continue
+		}
+
+		if strings.HasSuffix(inscription.Content, ".btc") {
+			var insc model.Inscription
+			config.Postgres.Select("id").Where("content = ?", inscription.Content).First(&insc)
+			if inscription.Id == insc.Id {
+				verifiedInscriptions = append(verifiedInscriptions, inscription)
+			} else {
+				unverifiedInscriptions = append(unverifiedInscriptions, inscription)
+			}
+
+			continue
+		}
+
+		if strings.HasSuffix(inscription.Content, ".xbt") {
+			var insc model.Inscription
+			config.Postgres.Select("id").Where("content = ?", inscription.Content).First(&insc)
+			if inscription.Id == insc.Id {
+				verifiedInscriptions = append(verifiedInscriptions, inscription)
+			} else {
+				unverifiedInscriptions = append(unverifiedInscriptions, inscription)
+			}
+
+			continue
+		}
+
+		if strings.HasSuffix(inscription.Content, ".gm") {
+			var insc model.Inscription
+			config.Postgres.Select("id").Where("content = ?", inscription.Content).First(&insc)
+			if inscription.Id == insc.Id {
+				verifiedInscriptions = append(verifiedInscriptions, inscription)
+			} else {
+				unverifiedInscriptions = append(unverifiedInscriptions, inscription)
+			}
+
+			continue
+		}
+
+		if strings.HasSuffix(inscription.Content, ".bitter") {
+			var insc model.Inscription
+			config.Postgres.Select("id").Where("content = ?", inscription.Content).First(&insc)
+			if inscription.Id == insc.Id {
+				verifiedInscriptions = append(verifiedInscriptions, inscription)
+			} else {
+				unverifiedInscriptions = append(unverifiedInscriptions, inscription)
+			}
+		}
+
+		if strings.HasSuffix(inscription.Content, ".x") {
+			var insc model.Inscription
+			config.Postgres.Select("id").Where("content = ?", inscription.Content).First(&insc)
+			if inscription.Id == insc.Id {
+				verifiedInscriptions = append(verifiedInscriptions, inscription)
+			} else {
+				unverifiedInscriptions = append(unverifiedInscriptions, inscription)
+			}
+
+			continue
+		}
+
+		if strings.HasSuffix(inscription.Content, ".magic") {
+			var insc model.Inscription
+			config.Postgres.Select("id").Where("content = ?", inscription.Content).First(&insc)
+			if inscription.Id == insc.Id {
+				verifiedInscriptions = append(verifiedInscriptions, inscription)
+			} else {
+				unverifiedInscriptions = append(unverifiedInscriptions, inscription)
+			}
+
+			continue
+		}
+
+		if strings.HasSuffix(inscription.Content, ".ord") {
+			var insc model.Inscription
+			config.Postgres.Select("id").Where("content = ?", inscription.Content).First(&insc)
+			if inscription.Id == insc.Id {
+				verifiedInscriptions = append(verifiedInscriptions, inscription)
+			} else {
+				unverifiedInscriptions = append(unverifiedInscriptions, inscription)
+			}
+
+			continue
+		}
+
+		// ₿
+		if strings.HasSuffix(inscription.Content, ".₿") {
+			var insc model.Inscription
+			config.Postgres.Select("id").Where("content = ?", inscription.Content).First(&insc)
+			if inscription.Id == insc.Id {
+				verifiedInscriptions = append(verifiedInscriptions, inscription)
+			} else {
+				unverifiedInscriptions = append(unverifiedInscriptions, inscription)
+			}
+
+			continue
+		}
+
+		if strings.HasSuffix(inscription.Content, ".pokemon") {
+			domains := strings.Split(inscription.Content, ".")
+			i, err := strconv.ParseInt(domains[0], 10, 32)
+			if err != nil {
+				continue
+			}
+			if i < 1 || i > 1010 {
+				continue
+			}
+			var insc model.Inscription
+			config.Postgres.Select("id").Where("content = ? and id > 0", inscription.Content).First(&insc)
+			if inscription.Id == insc.Id {
+				verifiedInscriptions = append(verifiedInscriptions, inscription)
+			} else {
+				unverifiedInscriptions = append(unverifiedInscriptions, inscription)
+			}
+
+			continue
+		}
+	}
+
+	sats, err := bestinslot.WalletSats(s.Address)
+	if err != nil {
+		// todo log
+	}
+
+	for _, satsname := range sats {
+		inscription := model.Inscription{
+			Id:            satsname.Id,
+			InscriptionId: satsname.InscriptionId,
+			Content:       satsname.Name,
+		}
+
+		verifiedInscriptions = append(verifiedInscriptions, inscription)
+	}
+
+	var bitmaps []model.Bitmap
+	config.Postgres.Table("bitmap_holder").Where("address = ?", s.Address).Find(&bitmaps)
+
+	for _, bitmap := range bitmaps {
+		inscription := model.Inscription{
+			Id:            bitmap.Id,
+			InscriptionId: bitmap.InscriptionId,
+			Content:       big.NewInt(int64(bitmap.BitmapId)).String() + ".bitmap",
+		}
+		verifiedInscriptions = append(verifiedInscriptions, inscription)
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Data: serializer.BuildVerifiedDomainListResponse(verifiedInscriptions),
 	}
 }

@@ -74,3 +74,13 @@ func BuildDomainListResponse(verified []model.Inscription, unverified []model.In
 
 	return inscriptions
 }
+
+func BuildVerifiedDomainListResponse(verified []model.Inscription) []*VerifiedInscriptionResponse {
+	var inscriptions []*VerifiedInscriptionResponse
+	for _, item := range verified {
+		inscription := BuildDomainResponse(item, true)
+		inscriptions = append(inscriptions, inscription)
+	}
+
+	return inscriptions
+}

@@ -102,3 +102,14 @@ func Domain(c *gin.Context) {
 		c.JSON(200, err.Error())
 	}
 }
+
+// bitmap
+func Domainv2(c *gin.Context) {
+	var service service.DomainService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.ListWithBitmap()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, err.Error())
+	}
+}
