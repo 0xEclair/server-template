@@ -42,7 +42,7 @@ func (s *AssetsListService) ListWithOss() serializer.Response {
 
 	w := fmt.Sprintf("assets.address = '%s' and assets.id >= 0 and inscriptions.oss_url is not null", s.Address)
 	if s.Type != "" {
-		w = fmt.Sprintf("%s and type = '%s'", w, s.Type)
+		w = fmt.Sprintf("%s and type in ('%s', 'character')", w, s.Type)
 	}
 
 	if s.Category != "" {
