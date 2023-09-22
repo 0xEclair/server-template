@@ -6,4 +6,5 @@ type Inscription struct {
 	Address       string
 	Content       string
 	ContentType   string
+	OssUrl        string
 }
