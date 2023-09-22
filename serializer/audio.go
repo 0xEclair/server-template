@@ -40,15 +40,19 @@ func BuildAudioListResponse(audios []model.Inscription, offset, limit int) Audio
 		return audioList[i].Id < audioList[j].Id
 	})
 
-	var last int
-	if offset+limit > len(audioList) {
-		last = len(audioList)
-	} else {
+	lenAudioList := len(audioList)
+	last := lenAudioList
+	var items []AudioResponse
+	if offset+limit < lenAudioList {
 		last = offset + limit
 	}
 
+	if offset < lenAudioList {
+		items = audioList[offset:last]
+	}
+
 	return AudioListResponse{
-		Count: len(audioList),
-		Items: audioList[offset:last],
+		Count: lenAudioList,
+		Items: items,
 	}
 }

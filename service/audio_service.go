@@ -32,10 +32,12 @@ func (s AudioService) List() serializer.Response {
 	config.Postgres.Where("address = ? and content_type in ?", s.Address, audioType).Find(&audioBRC420Entries)
 
 	var audioBRC420Inscriptions []model.Inscription
+	set := make(map[int64]bool)
 	if len(audioBRC420Entries) != 0 {
 		var ids []string
 		for _, abi := range audioBRC420Entries {
 			ids = append(ids, abi.Ref)
+			set[abi.Id] = true
 		}
 		config.Postgres.Where("inscription_id in ? and oss_url is not null", ids).Find(&audioBRC420Inscriptions)
 	}
@@ -45,9 +47,17 @@ func (s AudioService) List() serializer.Response {
 	// 	Joins("left join brc420_details on brc420_entries.ref=brc420_details.inscription_id").
 	// 	Where("brc420_entries.address = ? and brc420_entries.content_type in ?", s.Address, audioType).Order("brc420_entries.id").Find(&audioBRC420Inscriptions)
 
-	audioInscriptions = append(audioInscriptions, audioBRC420Inscriptions...)
+	var realAudioInscriptions []model.Inscription
+	for _, audio := range audioInscriptions {
+		if set[audio.Id] {
+			continue
+		}
+
+		realAudioInscriptions = append(realAudioInscriptions, audio)
+	}
+	realAudioInscriptions = append(realAudioInscriptions, audioBRC420Inscriptions...)
 	return serializer.Response{
 		Code: 200,
-		Data: serializer.BuildAudioListResponse(audioInscriptions, s.Offset, s.Limit),
+		Data: serializer.BuildAudioListResponse(realAudioInscriptions, s.Offset, s.Limit),
 	}
 }
