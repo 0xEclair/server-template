@@ -49,3 +49,45 @@ func BuildBitmapListWithCntResponse(cnt int64, items []model.Bitmap) *BitmapList
 		Items: inscriptions,
 	}
 }
+
+type BitmapListInfoResponse struct {
+	Id            int64  `json:"id"`
+	InscriptionId string `json:"inscription_id"`
+	ContentType   string `json:"content_type"`
+	Address       string `json:"address"`
+	Listed        bool   `json:"listed"`
+	ListedPrice   uint64 `json:"list_price"`
+	BitmapId      int64  `json:"bitmap_id"`
+	Content       string `json:"content"`
+	Source        string `json:"source"`
+}
+
+func BuildBitmapListInfoResponse(bitmap model.BitmapListInfo) BitmapListInfoResponse {
+	return BitmapListInfoResponse{
+		Id:            bitmap.Id,
+		InscriptionId: bitmap.InscriptionId,
+		ContentType:   bitmap.ContentType,
+		Address:       bitmap.Address,
+		Listed:        bitmap.Listed,
+		ListedPrice:   bitmap.ListedPrice,
+		BitmapId:      bitmap.BitmapId,
+		Content:       bitmap.Content,
+		Source:        bitmap.Source,
+	}
+}
+
+type BitmapListInfoResponseList struct {
+	Count int64                    `json:"count"`
+	Items []BitmapListInfoResponse `json:"items"`
+}
+
+func BuildBitmapListInfoResponseList(cnt int64, bitmaps []model.BitmapListInfo) BitmapListInfoResponseList {
+	var list []BitmapListInfoResponse
+	for _, bitmap := range bitmaps {
+		list = append(list, BuildBitmapListInfoResponse(bitmap))
+	}
+	return BitmapListInfoResponseList{
+		Count: cnt,
+		Items: list,
+	}
+}

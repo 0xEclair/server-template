@@ -45,6 +45,7 @@ func NewRouter() *gin.Engine {
 		bitmap.GET("/count", api.BitmapCount)
 		bitmap.GET("/:address", api.BitmapListByAddress)
 		bitmap.GET("/rank", api.BitmapRank)
+		bitmap.GET("/list", api.BitmapListInfo)
 	}
 
 	brc20 := v1.Group("/brc20")

@@ -97,3 +97,13 @@ func BitmapRank(c *gin.Context) {
 		c.JSON(200, err.Error())
 	}
 }
+
+func BitmapListInfo(c *gin.Context) {
+	var service service.BitmapListInfoService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.Info()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, err.Error())
+	}
+}

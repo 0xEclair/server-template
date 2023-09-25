@@ -69,3 +69,25 @@ func (s *BitmapRankService) List() serializer.Response {
 		Data: rank,
 	}
 }
+
+type BitmapListInfoService struct {
+	Offset int `json:"offset" form:"offset,default=0"`
+	Limit  int `json:"limit" form:"limit" `
+}
+
+func (s *BitmapListInfoService) Info() serializer.Response {
+	var info []model.BitmapListInfo
+	if s.Limit != 0 {
+		config.Postgres.Order("bitmap_id").Offset(s.Offset).Limit(s.Limit).Find(&info)
+	} else {
+		config.Postgres.Order("bitmap_id").Offset(s.Offset).Find(&info)
+	}
+
+	var cnt int64
+	config.Postgres.Model(&model.BitmapListInfo{}).Count(&cnt)
+
+	return serializer.Response{
+		Code: 200,
+		Data: serializer.BuildBitmapListInfoResponseList(cnt, info),
+	}
+}
