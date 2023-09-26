@@ -97,3 +97,13 @@ func AddressByCondition(c *gin.Context) {
 		c.JSON(200, err.Error())
 	}
 }
+
+func CreateOssKey(c *gin.Context) {
+	var service service.OssService
+	if err := c.ShouldBindUri(&service); err == nil {
+		res := service.CreateKey()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, err.Error())
+	}
+}
