@@ -14,6 +14,7 @@ type OssService struct {
 type CreateKeyResponse struct {
 	AccessKey    string `json:"access_key"`
 	AccessSecret string `json:"access_secret"`
+	AccessToken  string `json:"access_token"`
 }
 
 func (s *OssService) CreateKey() serializer.Response {
@@ -43,6 +44,7 @@ func (s *OssService) CreateKey() serializer.Response {
 		Data: CreateKeyResponse{
 			AccessKey:    response.Credentials.AccessKeyId,
 			AccessSecret: response.Credentials.AccessKeySecret,
+			AccessToken:  response.Credentials.SecurityToken,
 		},
 	}
 }
