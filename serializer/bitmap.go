@@ -4,6 +4,10 @@ import (
 	"server-template/model"
 )
 
+var SOURCE_URL map[string]string = map[string]string{
+	"magic_eden": "https://magiceden.io/ordinals/item-details/",
+}
+
 type BitmapResponse struct {
 	Id            int64  `json:"id"`
 	InscriptionId string `json:"inscription_id"`
@@ -60,9 +64,11 @@ type BitmapListInfoResponse struct {
 	BitmapId      int64  `json:"bitmap_id"`
 	Content       string `json:"content"`
 	Source        string `json:"source"`
+	SourceUrl     string `json:"source_url"`
 }
 
 func BuildBitmapListInfoResponse(bitmap model.BitmapListInfo) BitmapListInfoResponse {
+
 	return BitmapListInfoResponse{
 		Id:            bitmap.Id,
 		InscriptionId: bitmap.InscriptionId,
@@ -73,6 +79,7 @@ func BuildBitmapListInfoResponse(bitmap model.BitmapListInfo) BitmapListInfoResp
 		BitmapId:      bitmap.BitmapId,
 		Content:       bitmap.Content,
 		Source:        bitmap.Source,
+		SourceUrl:     SOURCE_URL[bitmap.Source] + bitmap.InscriptionId,
 	}
 }
 
