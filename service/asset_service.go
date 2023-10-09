@@ -8,11 +8,13 @@ import (
 )
 
 type AssetsListService struct {
-	Address  string `json:"address" form:"address" binding:"required"`
-	Type     string `json:"type" form:"type"`
-	Category string `json:"category" form:"category"`
-	Offset   int    `form:"offset,default=0" json:"offset"`
-	Limit    int    `form:"limit,default=1" json:"limit"`
+	Address    string `json:"address" form:"address" binding:"required"`
+	Type       string `json:"type" form:"type"`
+	Category   string `json:"category" form:"category"`
+	Collection string `json:"collection" form:"collection"`
+	Tag        string `json:"Tag" form:"Tag"`
+	Offset     int    `form:"offset,default=0" json:"offset"`
+	Limit      int    `form:"limit,default=1" json:"limit"`
 }
 
 func (s *AssetsListService) List() serializer.Response {
@@ -47,6 +49,14 @@ func (s *AssetsListService) ListWithOss() serializer.Response {
 
 	if s.Category != "" {
 		w = fmt.Sprintf("%s and category = '%s'", w, s.Category)
+	}
+
+	if s.Collection != "" {
+		w = fmt.Sprintf("%s and collection = '%s'", w, s.Collection)
+	}
+
+	if s.Tag != "" {
+		w = fmt.Sprintf("%s and tag like '%%%s%%'", w, s.Tag)
 	}
 
 	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category").Joins("left join inscriptions on assets.id=inscriptions.id").Where(w).Order("id").Offset(s.Offset).Limit(s.Limit).Find(&assets)
