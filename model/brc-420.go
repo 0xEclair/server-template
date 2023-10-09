@@ -6,6 +6,8 @@ type Asset struct {
 	Address       string
 	Type          string
 	Category      string
+	Collection    string
+	Tag           string
 }
 
 type AssetWithOss struct {
@@ -38,5 +40,5 @@ type BRC420Entry struct {
 
 type BRC420EntryWithTick struct {
 	BRC420Entry
-	Tick          string
+	Tick string
 }

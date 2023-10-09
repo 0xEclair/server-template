@@ -8,6 +8,8 @@ type AssetResponse struct {
 	Address       string `json:"address"`
 	Type          string `json:"type"`
 	Category      string `json:"category"`
+	Tag           string `json:"tag"`
+	Collection    string `json:"collection"`
 }
 
 func BuildAssetResponse(inscription model.Asset) *AssetResponse {
@@ -17,6 +19,8 @@ func BuildAssetResponse(inscription model.Asset) *AssetResponse {
 		Address:       inscription.Address,
 		Type:          inscription.Type,
 		Category:      inscription.Category,
+		Collection:    inscription.Collection,
+		Tag:           inscription.Tag,
 	}
 }
 
