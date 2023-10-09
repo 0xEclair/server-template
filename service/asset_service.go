@@ -12,7 +12,7 @@ type AssetsListService struct {
 	Type       string `json:"type" form:"type"`
 	Category   string `json:"category" form:"category"`
 	Collection string `json:"collection" form:"collection"`
-	Tag        string `json:"Tag" form:"Tag"`
+	Tag        string `json:"tag" form:"tag"`
 	Offset     int    `form:"offset,default=0" json:"offset"`
 	Limit      int    `form:"limit,default=1" json:"limit"`
 }
