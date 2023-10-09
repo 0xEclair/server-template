@@ -59,10 +59,10 @@ func (s *AssetsListService) ListWithOss() serializer.Response {
 		w = fmt.Sprintf("%s and tag like '%%%s%%'", w, s.Tag)
 	}
 
-	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category").Joins("left join inscriptions on assets.id=inscriptions.id").Where(w).Order("id").Offset(s.Offset).Limit(s.Limit).Find(&assets)
+	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(w).Order("id").Offset(s.Offset).Limit(s.Limit).Find(&assets)
 
 	var cnt int64
-	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category").Joins("left join inscriptions on assets.id=inscriptions.id").Where(w).Count(&cnt)
+	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(w).Count(&cnt)
 	return serializer.Response{
 		Code: 200,
 		Data: serializer.BuildAssetsListWithCntResponse(cnt, assets),
