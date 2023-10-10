@@ -8,7 +8,10 @@ import (
 	"time"
 )
 
-type AllBitmapService struct{}
+type AllBitmapService struct {
+	Offset int `json:"offset" form:"offset,default=0"`
+	Limit  int `json:"limit" form:"limit,default=1" `
+}
 
 var cacheBitmaps serializer.OrdysseyBitmapListResponse
 var interval = 6 * time.Minute
@@ -17,9 +20,14 @@ var last time.Time
 func (s AllBitmapService) List() serializer.Response {
 	if cacheBitmaps.Items != nil {
 		if time.Now().Sub(last) < interval {
+			start, end := s.calculateRange()
+			cache := cacheBitmaps.Items[start:end]
 			return serializer.Response{
 				Code: 200,
-				Data: cacheBitmaps,
+				Data: serializer.OrdysseyBitmapListResponse{
+					Cnt:   cacheBitmaps.Cnt,
+					Items: cache,
+				},
 			}
 		}
 	}
@@ -50,9 +58,29 @@ func (s AllBitmapService) List() serializer.Response {
 
 	cacheBitmaps = serializer.BuildOrdysseyBitmapListResponse(bms, bitmapsFromOrdyssey)
 	last = time.Now()
-	
+
+	start, end := s.calculateRange()
+	cache := cacheBitmaps.Items[start:end]
+
 	return serializer.Response{
 		Code: 200,
-		Data: cacheBitmaps,
+		Data: serializer.OrdysseyBitmapListResponse{
+			Cnt:   cacheBitmaps.Cnt,
+			Items: cache,
+		},
 	}
+}
+
+func (s AllBitmapService) calculateRange() (int, int) {
+	var start, end int
+	if s.Offset > len(cacheBitmaps.Items) {
+		return 0, 0
+	}
+
+	end = s.Offset + s.Limit
+	if end > len(cacheBitmaps.Items) {
+		end = len(cacheBitmaps.Items)
+	}
+	start = s.Offset
+	return start, end
 }
