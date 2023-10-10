@@ -50,6 +50,7 @@ func (s AllBitmapService) List() serializer.Response {
 
 	cacheBitmaps = serializer.BuildOrdysseyBitmapListResponse(bms, bitmapsFromOrdyssey)
 	last = time.Now()
+	
 	return serializer.Response{
 		Code: 200,
 		Data: cacheBitmaps,
