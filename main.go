@@ -10,5 +10,4 @@ func main() {
 
 	r := server.NewRouter()
 	r.Run(":3000")
-	//CDC()
 }

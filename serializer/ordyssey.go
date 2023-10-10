@@ -25,7 +25,7 @@ func BuildOrdysseyBitmapResponse(b model.Bitmap, o ordyssey.Bitmap) OrdysseyBitm
 		BitmapId:      int64(b.BitmapId),
 		Price:         o.Price,
 		Source:        o.Source,
-		SourceUrl:     SOURCE_URL[o.Source],
+		SourceUrl:     SOURCE_URL[o.Source] + b.InscriptionId,
 	}
 }
 

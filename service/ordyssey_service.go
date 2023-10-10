@@ -46,7 +46,7 @@ func (s AllBitmapService) List() serializer.Response {
 	}
 
 	var bms []model.Bitmap
-	config.Postgres.Table("bitmap_holder").Select("bitmap_id, inscription_id").Where("inscription_id in ?", inscriptionIds).Order("bitmap_id").Find(&bms)
+	config.Postgres.Table("bitmap_holder").Select("id, bitmap_id, inscription_id").Where("inscription_id in ?", inscriptionIds).Order("bitmap_id").Find(&bms)
 
 	cacheBitmaps = serializer.BuildOrdysseyBitmapListResponse(bms, bitmapsFromOrdyssey)
 	last = time.Now()

@@ -5,7 +5,10 @@ import (
 )
 
 var SOURCE_URL map[string]string = map[string]string{
-	"magic_eden": "https://magiceden.io/ordinals/item-details/",
+	"magic_eden":     "https://magiceden.io/ordinals/item-details/",
+	"magiceden":      "https://magiceden.io/ordinals/item-details/",
+	"unisat":         "https://unisat.io/inscription/",
+	"ordinalswallet": "https://ordinalswallet.com/inscription/",
 }
 
 type BitmapResponse struct {
