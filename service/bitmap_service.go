@@ -38,7 +38,7 @@ type BitmapListService struct {
 }
 
 func (s *BitmapListService) List() serializer.Response {
-	bitmaps := []model.Bitmap{}
+	var bitmaps []model.Bitmap
 	config.Postgres.Table("bitmap_holder").Where("address = ?", s.Address).Order("bitmap_id").Offset(s.Offset).Limit(s.Limit).Find(&bitmaps)
 
 	var cnt int64
