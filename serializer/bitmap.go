@@ -52,6 +52,10 @@ func BuildBitmapListWithCntResponse(cnt int64, items []model.Bitmap) *BitmapList
 		inscriptions = append(inscriptions, inscription)
 	}
 
+	if len(inscriptions) == 0 || inscriptions == nil {
+		inscriptions = make([]*BitmapResponse, 0)
+	}
+
 	return &BitmapListResponse{
 		Count: cnt,
 		Items: inscriptions,
