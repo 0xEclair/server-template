@@ -5,6 +5,7 @@ import (
 	"server-template/model"
 	"server-template/serializer"
 	"server-template/third/ordyssey"
+	"sync"
 	"time"
 )
 
@@ -16,12 +17,15 @@ type AllBitmapService struct {
 var cacheBitmaps serializer.OrdysseyBitmapListResponse
 var interval = 6 * time.Minute
 var last time.Time
+var mu sync.Mutex
 
 func (s AllBitmapService) List() serializer.Response {
+	mu.Lock()
 	if cacheBitmaps.Items != nil {
 		if time.Now().Sub(last) < interval {
 			start, end := s.calculateRange()
 			cache := cacheBitmaps.Items[start:end]
+			mu.Unlock()
 			return serializer.Response{
 				Code: 200,
 				Data: serializer.OrdysseyBitmapListResponse{
@@ -31,6 +35,7 @@ func (s AllBitmapService) List() serializer.Response {
 			}
 		}
 	}
+	mu.Unlock()
 
 	bitmaps, err := ordyssey.AllBitmaps()
 	if err != nil {
@@ -56,8 +61,10 @@ func (s AllBitmapService) List() serializer.Response {
 	var bms []model.Bitmap
 	config.Postgres.Table("bitmap_holder").Select("id, bitmap_id, inscription_id").Where("inscription_id in ?", inscriptionIds).Order("bitmap_id").Find(&bms)
 
+	mu.Lock()
 	cacheBitmaps = serializer.BuildOrdysseyBitmapListResponse(bms, bitmapsFromOrdyssey)
 	last = time.Now()
+	mu.Unlock()
 
 	start, end := s.calculateRange()
 	cache := cacheBitmaps.Items[start:end]
