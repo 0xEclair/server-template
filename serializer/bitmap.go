@@ -9,6 +9,7 @@ var SOURCE_URL map[string]string = map[string]string{
 	"magiceden":      "https://magiceden.io/ordinals/item-details/",
 	"unisat":         "https://unisat.io/inscription/",
 	"ordinalswallet": "https://ordinalswallet.com/inscription/",
+	"other":          "",
 }
 
 type BitmapResponse struct {

@@ -25,3 +25,14 @@ func AudioByAddress(c *gin.Context) {
 		c.JSON(200, err.Error())
 	}
 }
+
+func ModelByAddress(c *gin.Context) {
+	var service service.AudioService
+	service.ContentType = "model"
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.List()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, err.Error())
+	}
+}

@@ -42,7 +42,8 @@ func BuildAudioListResponse(audios []model.Inscription, offset, limit int) Audio
 
 	lenAudioList := len(audioList)
 	last := lenAudioList
-	var items []AudioResponse
+
+	items := make([]AudioResponse, 0)
 	if offset+limit < lenAudioList {
 		last = offset + limit
 	}

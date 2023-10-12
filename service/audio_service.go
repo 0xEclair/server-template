@@ -10,26 +10,34 @@ type AudioService struct {
 	Address string `json:"address" form:"address" binding:"required"`
 	//Type     string `json:"type" form:"type"`
 	//Category string `json:"category" form:"category"`
-	Offset int `form:"offset,default=0" json:"offset"`
-	Limit  int `form:"limit,default=1" json:"limit"`
+	Offset      int    `form:"offset,default=0" json:"offset"`
+	Limit       int    `form:"limit,default=1" json:"limit"`
+	ContentType string `form:"content_type" json:"content_type"`
 }
 
 func (s AudioService) List() serializer.Response {
-	audioType := []string{
-		"audio/ogg",
-		"audio/wav",
-		"audio/flac",
-		"audio/midi",
-		"audio/mpeg",
-		"audio/x-m4a",
-		"audio/mod",
+	var realType []string
+	if s.ContentType == "" {
+		realType = []string{
+			"audio/ogg",
+			"audio/wav",
+			"audio/flac",
+			"audio/midi",
+			"audio/mpeg",
+			"audio/x-m4a",
+			"audio/mod",
+		}
+	} else if s.ContentType == "model" {
+		realType = []string{
+			"model/gltf-binary",
+		}
 	}
 
 	var audioInscriptions []model.Inscription
-	config.Postgres.Where("id > 0 and address = ? and content_type in ? and oss_url is not null", s.Address, audioType).Find(&audioInscriptions)
+	config.Postgres.Where("id > 0 and address = ? and content_type in ? and oss_url is not null", s.Address, realType).Find(&audioInscriptions)
 
 	var audioBRC420Entries []model.BRC420Entry
-	config.Postgres.Where("address = ? and content_type in ?", s.Address, audioType).Find(&audioBRC420Entries)
+	config.Postgres.Where("address = ? and content_type in ?", s.Address, realType).Find(&audioBRC420Entries)
 
 	var audioBRC420Inscriptions []model.Inscription
 	set := make(map[int64]bool)
