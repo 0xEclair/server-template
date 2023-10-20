@@ -38,6 +38,17 @@ type BRC420Entry struct {
 	MintTimestamp int32
 }
 
+type BRC420EntryWithName struct {
+	Id            int64
+	InscriptionId string
+	Address       string
+	ContentType   string
+	Ref           string
+	FeeAt         string
+	MintTimestamp int32
+	Name          string
+}
+
 type BRC420EntryWithTick struct {
 	BRC420Entry
 	Tick string
