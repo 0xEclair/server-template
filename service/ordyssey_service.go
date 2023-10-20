@@ -15,7 +15,7 @@ type AllBitmapService struct {
 }
 
 var cacheBitmaps serializer.OrdysseyBitmapListResponse
-var interval = 6 * time.Minute
+var interval = 150 * time.Second
 var last time.Time
 var mu sync.Mutex
 
