@@ -102,7 +102,7 @@ func (s *AssetsListService) ListWithOssAndBRC420() serializer.Response {
 		findAllAssets = append(findAllAssets, asset.Ref)
 	}
 	var brc420Assets []model.Asset
-	ow := fmt.Sprintf("assets.id >= 0 and inscriptions.oss_url is not null and assets.inscription_id in ('%s')", findAllAssets)
+	ow := "assets.id >= 0 and inscriptions.oss_url is not null and assets.inscription_id in ?"
 
 	if s.Type != "" {
 		ow = fmt.Sprintf("%s and type in ('%s', 'character')", ow, s.Type)
@@ -120,7 +120,7 @@ func (s *AssetsListService) ListWithOssAndBRC420() serializer.Response {
 		ow = fmt.Sprintf("%s and tag like '%%%s%%'", ow, s.Tag)
 	}
 
-	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(ow).Order("id").Find(&brc420Assets)
+	config.Postgres.Debug().Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(ow, findAllAssets).Order("id").Find(&brc420Assets)
 
 	assets = append(assets, brc420Assets...)
 
