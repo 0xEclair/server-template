@@ -90,10 +90,7 @@ func (s *AssetsListService) ListWithOssAndBRC420() serializer.Response {
 		w = fmt.Sprintf("%s and tag like '%%%s%%'", w, s.Tag)
 	}
 
-	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(w).Order("id").Offset(s.Offset).Limit(s.Limit).Find(&assets)
-
-	var cnt int64
-	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(w).Count(&cnt)
+	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(w).Order("id").Find(&assets)
 
 	var brc420AssetsWithName []model.BRC420EntryWithName
 	config.Postgres.Table("brc420_entries").
@@ -105,18 +102,46 @@ func (s *AssetsListService) ListWithOssAndBRC420() serializer.Response {
 		findAllAssets = append(findAllAssets, asset.Ref)
 	}
 	var brc420Assets []model.Asset
-	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Where("assets.inscription_id in ? and id > 0", findAllAssets).Order("id").Find(&brc420Assets)
+	ow := fmt.Sprintf("assets.id >= 0 and inscriptions.oss_url is not null and assets.inscription_id in ('%s')", findAllAssets)
 
+	if s.Type != "" {
+		ow = fmt.Sprintf("%s and type in ('%s', 'character')", ow, s.Type)
+	}
 
-	
+	if s.Category != "" {
+		ow = fmt.Sprintf("%s and category = '%s'", ow, s.Category)
+	}
+
+	if s.Collection != "" {
+		ow = fmt.Sprintf("%s and collection = '%s'", ow, s.Collection)
+	}
+
+	if s.Tag != "" {
+		ow = fmt.Sprintf("%s and tag like '%%%s%%'", ow, s.Tag)
+	}
+
+	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(ow).Order("id").Find(&brc420Assets)
+
 	assets = append(assets, brc420Assets...)
 
 	sort.Slice(assets, func(i, j int) bool {
 		return assets[i].Id < assets[j].Id
 	})
-	
+	cnt := len(assets)
+
+	last := s.Offset + s.Limit
+	if last > len(assets) {
+		last = len(assets)
+	}
+
+	if s.Offset < len(assets) {
+		assets = assets[s.Offset:last]
+	} else {
+		assets = make([]model.Asset, 0)
+	}
+
 	return serializer.Response{
 		Code: 200,
-		Data: serializer.BuildAssetsListWithCntResponse(cnt, assets),
+		Data: serializer.BuildAssetsListWithCntResponse(int64(cnt), assets),
 	}
 }
