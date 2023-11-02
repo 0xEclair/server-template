@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"server-template/cache"
 	"server-template/config"
 	"server-template/model"
 	"server-template/serializer"
@@ -128,6 +129,103 @@ func (s *AssetsListService) ListWithOssAndBRC420() serializer.Response {
 		return assets[i].Id < assets[j].Id
 	})
 	cnt := len(assets)
+
+	last := s.Offset + s.Limit
+	if last > len(assets) {
+		last = len(assets)
+	}
+
+	if s.Offset < len(assets) {
+		assets = assets[s.Offset:last]
+	} else {
+		assets = make([]model.Asset, 0)
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Data: serializer.BuildAssetsListWithCntResponse(int64(cnt), assets),
+	}
+}
+
+func (s *AssetsListService) ListWithOssAndBRC420V2() serializer.Response {
+	var assets []model.Asset
+
+	w := fmt.Sprintf("assets.address = '%s' and assets.id >= 0 and inscriptions.oss_url is not null", s.Address)
+	if s.Type != "" {
+		w = fmt.Sprintf("%s and type in ('%s', 'character')", w, s.Type)
+	}
+
+	if s.Category != "" {
+		w = fmt.Sprintf("%s and category = '%s'", w, s.Category)
+	}
+
+	if s.Collection != "" {
+		w = fmt.Sprintf("%s and collection = '%s'", w, s.Collection)
+	}
+
+	if s.Tag != "" {
+		w = fmt.Sprintf("%s and tag like '%%%s%%'", w, s.Tag)
+	}
+
+	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(w).Order("id").Find(&assets)
+
+	var brc420AssetsWithName []model.BRC420EntryWithName
+	config.Postgres.Table("brc420_entries").
+		Select("brc420_entries.id", "brc420_entries.inscription_id", "brc420_entries.address", "brc420_entries.content_type", "brc420_entries.ref", "brc420_entries.fee_at", "brc420_entries.mint_timestamp", "brc420_details.name").
+		Joins("left join brc420_details on brc420_entries.ref=brc420_details.tick").Where("brc420_entries.address = ? and content_type in ?", s.Address, []string{"text/html", "text/html;charset=utf-8"}).Find(&brc420AssetsWithName)
+
+	findAllAssets := []string{}
+	for _, asset := range brc420AssetsWithName {
+		findAllAssets = append(findAllAssets, asset.Ref)
+	}
+	var brc420Assets []model.Asset
+	ow := "assets.id >= 0 and inscriptions.oss_url is not null and assets.inscription_id in ?"
+
+	if s.Type != "" {
+		ow = fmt.Sprintf("%s and type in ('%s', 'character')", ow, s.Type)
+	}
+
+	if s.Category != "" {
+		ow = fmt.Sprintf("%s and category = '%s'", ow, s.Category)
+	}
+
+	if s.Collection != "" {
+		ow = fmt.Sprintf("%s and collection = '%s'", ow, s.Collection)
+	}
+
+	if s.Tag != "" {
+		ow = fmt.Sprintf("%s and tag like '%%%s%%'", ow, s.Tag)
+	}
+
+	config.Postgres.Debug().Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(ow, findAllAssets).Order("id").Find(&brc420Assets)
+
+	assets = append(assets, brc420Assets...)
+
+	sort.Slice(assets, func(i, j int) bool {
+		return assets[i].Id < assets[j].Id
+	})
+	cnt := len(assets)
+
+	dlcService := AssetsListService{
+		Address:    s.Address,
+		Type:       "",
+		Category:   "",
+		Collection: "",
+		Tag:        "",
+		Offset:     0,
+		Limit:      10000,
+	}
+
+	dlcRes := dlcService.ListDLCWithOssAndBRC420()
+	dlcList, ok := dlcRes.Data.(*serializer.AssetsListResponse)
+	if ok {
+		for _, item := range dlcList.Items {
+			if cache.DLCToAssets[item.InscriptionId] != nil {
+				assets = append(assets, cache.DLCToAssets[item.InscriptionId]...)
+				cnt += len(cache.DLCToAssets[item.InscriptionId])
+			}
+		}
+	}
 
 	last := s.Offset + s.Limit
 	if last > len(assets) {

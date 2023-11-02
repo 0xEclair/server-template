@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"server-template/cache"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -44,4 +45,6 @@ func InitPostgres() {
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(20)
 	Postgres = db
+
+	cache.InitCronPostgres(db)
 }

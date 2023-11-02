@@ -5,6 +5,8 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+
+	"server-template/cache"
 )
 
 func Init() {
@@ -23,4 +25,6 @@ func Init() {
 	if os.Getenv("redis_addr") != "" {
 		InitRedis()
 	}
+
+	cache.InitCron()
 }
