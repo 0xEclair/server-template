@@ -35,6 +35,7 @@ func NewRouter() *gin.Engine {
 		v1.GET("domain", api.Domain)
 		v1.GET("asset", api.AssetsListByAddress)
 		v1.GET("assetv2", api.AssetsListByAddressV2)
+		v1.GET("assetv3", api.AssetsListByAddressV3)
 		v1.GET("metaversedlc", api.AssetsDLCListByAddress)
 		v1.GET("/assumerole", api.CreateOssKey)
 	}

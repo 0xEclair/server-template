@@ -26,6 +26,16 @@ func AssetsListByAddressV2(c *gin.Context) {
 	}
 }
 
+func AssetsListByAddressV3(c *gin.Context) {
+	var service service.AssetsListService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.ListWithOssAndBRC420V3()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, err.Error())
+	}
+}
+
 func AssetsDLCListByAddress(c *gin.Context) {
 	var service service.AssetsListService
 	if err := c.ShouldBind(&service); err == nil {
