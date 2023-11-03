@@ -197,7 +197,7 @@ func (s *AssetsListService) ListWithOssAndBRC420V2() serializer.Response {
 		ow = fmt.Sprintf("%s and tag like '%%%s%%'", ow, s.Tag)
 	}
 
-	config.Postgres.Debug().Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(ow, findAllAssets).Order("id").Find(&brc420Assets)
+	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(ow, findAllAssets).Order("id").Find(&brc420Assets)
 
 	assets = append(assets, brc420Assets...)
 
@@ -215,7 +215,13 @@ func (s *AssetsListService) ListWithOssAndBRC420V2() serializer.Response {
 		Offset:     0,
 		Limit:      10000,
 	}
-
+	var as []model.AssDLC = []model.AssDLC{}
+	for _, a := range assets {
+		as = append(as, model.AssDLC{
+			Asset: a,
+			DLC:   false,
+		})
+	}
 	dlcRes := dlcService.ListDLCWithOssAndBRC420()
 	dlcList, ok := dlcRes.Data.(*serializer.AssetsListResponse)
 	if ok {
@@ -224,8 +230,29 @@ func (s *AssetsListService) ListWithOssAndBRC420V2() serializer.Response {
 				// assets = append(assets, cache.DLCToAssets[item.InscriptionId]...)
 				// cnt += len(cache.DLCToAssets[item.InscriptionId])
 				for _, ass := range cache.DLCToAssets[item.InscriptionId] {
-					if ass.Category == s.Category && ass.Collection == s.Collection && ass.Tag == s.Tag && ass.Type == s.Type {
-						assets = append(assets, ass)
+					if ass.Category == s.Category && s.Category != "" {
+						as = append(as, model.AssDLC{
+							Asset: ass,
+							DLC:   true,
+						})
+						cnt += 1
+					} else if ass.Collection == s.Collection && s.Collection != "" {
+						as = append(as, model.AssDLC{
+							Asset: ass,
+							DLC:   true,
+						})
+						cnt += 1
+					} else if ass.Tag == s.Tag && s.Tag != "" {
+						as = append(as, model.AssDLC{
+							Asset: ass,
+							DLC:   true,
+						})
+						cnt += 1
+					} else if ass.Type == s.Type && s.Type != "" {
+						as = append(as, model.AssDLC{
+							Asset: ass,
+							DLC:   true,
+						})
 						cnt += 1
 					}
 				}
@@ -233,25 +260,25 @@ func (s *AssetsListService) ListWithOssAndBRC420V2() serializer.Response {
 		}
 	}
 
-	sort.Slice(assets, func(i, j int) bool {
-		return assets[i].Id < assets[j].Id
+	sort.Slice(as, func(i, j int) bool {
+		return as[i].Id < as[j].Id
 	})
-	cnt = len(assets)
+	cnt = len(as)
 
 	last := s.Offset + s.Limit
-	if last > len(assets) {
-		last = len(assets)
+	if last > len(as) {
+		last = len(as)
 	}
 
-	if s.Offset < len(assets) {
-		assets = assets[s.Offset:last]
+	if s.Offset < len(as) {
+		as = as[s.Offset:last]
 	} else {
-		assets = make([]model.Asset, 0)
+		as = make([]model.AssDLC, 0)
 	}
 
 	return serializer.Response{
 		Code: 200,
-		Data: serializer.BuildAssetsListWithCntResponse(int64(cnt), assets),
+		Data: serializer.BuildAssetsListWithCntResponseDLC(int64(cnt), as),
 	}
 }
 
@@ -289,7 +316,7 @@ func (s *AssetsListService) ListDLCWithOssAndBRC420() serializer.Response {
 
 	ow = fmt.Sprintf("%s and tag like '%%%s%%'", ow, s.Tag)
 
-	config.Postgres.Debug().Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(ow, findAllAssets).Order("id").Find(&brc420Assets)
+	config.Postgres.Table("assets").Select("assets.id, assets.inscription_id, assets.address, assets.type, assets.category, assets.collection, assets.tag").Joins("left join inscriptions on assets.id=inscriptions.id").Where(ow, findAllAssets).Order("id").Find(&brc420Assets)
 
 	assets = append(assets, brc420Assets...)
 

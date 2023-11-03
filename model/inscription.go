@@ -9,6 +9,11 @@ type Inscription struct {
 	OssUrl        string
 }
 
+type AssDLC struct {
+	Asset
+	DLC bool
+}
+
 type InscriptionWithNameCount struct {
 	Id            int64
 	InscriptionId string
