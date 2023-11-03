@@ -49,6 +49,17 @@ func BuildInscriptionListResponse(items []model.Inscription) []*InscriptionRespo
 	return inscriptions
 }
 
+func BuildInscriptionListResponseForBitmap(items []model.Inscription) []*InscriptionResponse {
+	var inscriptions []*InscriptionResponse
+	for _, item := range items {
+		item.Content = ""
+		inscription := BuildInscriptionResponse(item)
+		inscriptions = append(inscriptions, inscription)
+	}
+
+	return inscriptions
+}
+
 func BuildDomainResponse(inscription model.Inscription, verified bool) *VerifiedInscriptionResponse {
 	return &VerifiedInscriptionResponse{
 		Id:            inscription.Id,

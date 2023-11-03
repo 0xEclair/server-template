@@ -20,6 +20,6 @@ func (s *ListInscriptionsService) List() serializer.Response {
 	config.Postgres.Model(&model.Inscription{}).Where("id >= 0 and address = ?", s.Address).Count(&cnt)
 	return serializer.Response{
 		Code: 200,
-		Data: serializer.BuildImageListResponse(cnt, inscriptions),
+		Data: serializer.BuildAddressInscriptionsListResponse(cnt, inscriptions),
 	}
 }

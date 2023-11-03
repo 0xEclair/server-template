@@ -13,3 +13,10 @@ func BuildImageListResponse(cnt int64, items []model.Inscription) *ImageListResp
 		Items: BuildInscriptionListResponse(items),
 	}
 }
+
+func BuildAddressInscriptionsListResponse(cnt int64, items []model.Inscription) *ImageListResponse {
+	return &ImageListResponse{
+		Count: cnt,
+		Items: BuildInscriptionListResponse(items),
+	}
+}
