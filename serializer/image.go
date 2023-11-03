@@ -17,6 +17,6 @@ func BuildImageListResponse(cnt int64, items []model.Inscription) *ImageListResp
 func BuildAddressInscriptionsListResponse(cnt int64, items []model.Inscription) *ImageListResponse {
 	return &ImageListResponse{
 		Count: cnt,
-		Items: BuildInscriptionListResponse(items),
+		Items: BuildInscriptionListResponseForBitmap(items),
 	}
 }
