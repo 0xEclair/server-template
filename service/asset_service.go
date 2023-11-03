@@ -221,11 +221,22 @@ func (s *AssetsListService) ListWithOssAndBRC420V2() serializer.Response {
 	if ok {
 		for _, item := range dlcList.Items {
 			if cache.DLCToAssets[item.InscriptionId] != nil {
-				assets = append(assets, cache.DLCToAssets[item.InscriptionId]...)
-				cnt += len(cache.DLCToAssets[item.InscriptionId])
+				// assets = append(assets, cache.DLCToAssets[item.InscriptionId]...)
+				// cnt += len(cache.DLCToAssets[item.InscriptionId])
+				for _, ass := range cache.DLCToAssets[item.InscriptionId] {
+					if ass.Category == s.Category && ass.Collection == s.Collection && ass.Tag == s.Tag && ass.Type == s.Type {
+						assets = append(assets, ass)
+						cnt += 1
+					}
+				}
 			}
 		}
 	}
+
+	sort.Slice(assets, func(i, j int) bool {
+		return assets[i].Id < assets[j].Id
+	})
+	cnt = len(assets)
 
 	last := s.Offset + s.Limit
 	if last > len(assets) {
