@@ -348,7 +348,7 @@ func (s *AssetsListService) ListWithOssAndBRC420V3() serializer.Response {
 		Collection: "",
 		Tag:        "",
 		Offset:     0,
-		Limit:      10000,
+		Limit:      99999,
 	}
 	var as []model.AssDLC = []model.AssDLC{}
 	for _, a := range assets {
@@ -497,7 +497,7 @@ func (s *AssetsListService) ListDLCWithOssAndBRC420V3() serializer.Response {
 	var brc420AssetsWithName []model.BRC420EntryWithName
 	config.Postgres.Debug().Table("brc420_entries").
 		Select("brc420_entries.id", "brc420_entries.inscription_id", "brc420_entries.address", "brc420_entries.content_type", "brc420_entries.ref", "brc420_entries.fee_at", "brc420_entries.mint_timestamp", "brc420_details.name").
-		Joins("left join brc420_details on brc420_entries.ref=brc420_details.tick").Where("(brc420_entries.address = ? and content_type in ?) or brc420_entries.ref = 'e80eadea13e2175949168c279f7a47a467b6c5e00a84d45dd8ae40aefda89fe5i0'", s.Address, []string{"text/html", "text/html;charset=utf-8"}).Find(&brc420AssetsWithName)
+		Joins("left join brc420_details on brc420_entries.ref=brc420_details.tick").Where("brc420_entries.address = ? and (content_type in ? or brc420_entries.ref = 'e80eadea13e2175949168c279f7a47a467b6c5e00a84d45dd8ae40aefda89fe5i0')", s.Address, []string{"text/html", "text/html;charset=utf-8"}).Find(&brc420AssetsWithName)
 
 	findAllAssets := []string{}
 	for _, asset := range brc420AssetsWithName {
