@@ -37,23 +37,9 @@ func (s *ImageService) List() serializer.Response {
 	_ = cnt
 	_ = typeList
 
-	if s.Offset >= 1208085 {
-		return serializer.Response{
-			Code: 200,
-			Data: serializer.BuildImageListResponse(1208085, inscriptions),
-		}
-	}
-
-	if s.Offset == 0 && s.Limit == 1 {
-		return serializer.Response{
-			Code: 200,
-			Data: serializer.BuildImageListResponse(1208085, inscriptions),
-		}
-	}
-
 	return serializer.Response{
 		Code: 200,
-		Data: serializer.BuildImageListResponse(cnt, inscriptions),
+		Data: serializer.BuildImageListResponse(1205785, inscriptions),
 	}
 }
 
