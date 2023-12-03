@@ -57,7 +57,7 @@ func (s *ImageService) ListV2() serializer.Response {
 	}
 
 	config.Postgres.Select("id", "inscription_id", "address", "content", "content_type").
-		Where("id >= ? and content_type in ?", s.Id, typeList).
+		Where("id > ? and content_type in ?", s.Id, typeList).
 		Order("id asc").
 		Limit(s.Limit).
 		Find(&inscriptions)
