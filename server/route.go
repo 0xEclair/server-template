@@ -22,7 +22,7 @@ func NewRouter() *gin.Engine {
 		v1.POST("log", api.Error)
 
 		v1.GET("images", api.Image)
-		v1.GET("imagesv2", api.Imagev2)
+		v1.GET("imagesv2", api.ImageId)
 		v1.GET("audio", api.AudioByAddress)
 		v1.GET("model", api.ModelByAddress)
 		v1.GET("merge", api.CanMergeByAddress)

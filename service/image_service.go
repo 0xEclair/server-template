@@ -10,6 +10,7 @@ type ImageService struct {
 	Offset int    `form:"offset" json:"offset"`
 	Limit  int    `form:"limit" json:"limit"`
 	Type   string `form:"type" json:"type"`
+	Id     int    `json:"id" form:"id"`
 }
 
 func (s *ImageService) List() serializer.Response {
@@ -40,6 +41,30 @@ func (s *ImageService) List() serializer.Response {
 	return serializer.Response{
 		Code: 200,
 		Data: serializer.BuildImageListResponse(1205785, inscriptions),
+	}
+}
+
+func (s *ImageService) ListV2() serializer.Response {
+	var inscriptions []model.Inscription
+	typeList := []string{
+		"image/avif",
+		"image/gif",
+		"image/jpeg",
+		"image/png",
+		"image/svg+xml",
+		"image/webp",
+		"image/svg+xml;charset=utf-8",
+	}
+
+	config.Postgres.Select("id", "inscription_id", "address", "content", "content_type").
+		Where("id >= ? and content_type in ?", s.Id, typeList).
+		Order("id asc").
+		Limit(s.Limit).
+		Find(&inscriptions)
+
+	return serializer.Response{
+		Code: 200,
+		Data: serializer.BuildImageListResponse(0, inscriptions),
 	}
 }
 
