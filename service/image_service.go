@@ -24,16 +24,32 @@ func (s *ImageService) List() serializer.Response {
 		"image/svg+xml;charset=utf-8",
 	}
 
-	config.Postgres.Select("id", "inscription_id", "address", "content", "content_type").
-		Where("id >= ? and content_type in ?", 0, typeList).
-		Offset(s.Offset).Order("id asc").
-		Limit(s.Limit).
-		Find(&inscriptions)
+	// config.Postgres.Select("id", "inscription_id", "address", "content", "content_type").
+	// 	Where("id >= ? and content_type in ?", 0, typeList).
+	// 	Offset(s.Offset).Order("id asc").
+	// 	Limit(s.Limit).
+	// 	Find(&inscriptions)
 
 	var cnt int64
-	config.Postgres.Model(&model.Inscription{}).
-		Where("id >= ? and content_type in ?", 0, typeList).
-		Count(&cnt)
+	// config.Postgres.Model(&model.Inscription{}).
+	// 	Where("id >= ? and content_type in ?", 0, typeList).
+	// 	Count(&cnt)
+	_ = cnt
+	_ = typeList
+
+	if s.Offset >= 1208085 {
+		return serializer.Response{
+			Code: 200,
+			Data: serializer.BuildImageListResponse(1208085, inscriptions),
+		}
+	}
+
+	if s.Offset == 0 && s.Limit == 1 {
+		return serializer.Response{
+			Code: 200,
+			Data: serializer.BuildImageListResponse(1208085, inscriptions),
+		}
+	}
 
 	return serializer.Response{
 		Code: 200,
