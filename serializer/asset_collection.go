@@ -34,5 +34,10 @@ func BuildAssetCollectionListResponse(brc420Details []model.BRC420Detail) AssetC
 		list.Items = append(list.Items, res)
 	}
 
+	list.Items = append(list.Items, &AssetCollectionResponse{
+		Name:           "others",
+		CollectionName: "others",
+	})
+
 	return list
 }

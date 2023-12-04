@@ -8,6 +8,7 @@ type Asset struct {
 	Category      string
 	Collection    string
 	Tag           string
+	Cons          bool
 }
 
 type AssetWithOss struct {

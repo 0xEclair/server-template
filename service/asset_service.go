@@ -283,6 +283,35 @@ func (s *AssetsListService) ListWithOssAndBRC420V2() serializer.Response {
 }
 
 func (s *AssetsListService) ListWithOssAndBRC420V3() serializer.Response {
+	if s.Collection == "others" {
+		var assets []model.Asset
+		config.Postgres.Model(&model.Asset{}).Where("address = ? and cons = true", s.Address).Order("id").Find(&assets)
+
+		list := []string{}
+		for _, asset := range assets {
+			list = append(list, asset.InscriptionId)
+		}
+
+		var brc420Details []model.BRC420Detail
+		config.Postgres.Model(&model.BRC420Detail{}).Where("address = ? and tick in ?", s.Address, list).Find(&brc420Details)
+		needToDelete := make(map[string]bool)
+		for _, detail := range brc420Details {
+			needToDelete[detail.Tick] = true
+		}
+
+		var res []model.Asset
+		for _, asset := range assets {
+			if !needToDelete[asset.InscriptionId] {
+				res = append(res, asset)
+			}
+		}
+
+		return serializer.Response{
+			Code: 200,
+			Data: serializer.BuildAssetsListWithCntResponse(int64(len(res)), res),
+		}
+
+	}
 	var assets []model.Asset
 
 	w := fmt.Sprintf("assets.address = '%s' and assets.id >= 0 and inscriptions.oss_url is not null", s.Address)
