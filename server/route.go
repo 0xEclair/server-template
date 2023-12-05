@@ -40,6 +40,8 @@ func NewRouter() *gin.Engine {
 		v1.GET("assetcollection", api.AssetsCollection)
 		v1.GET("metaversedlc", api.AssetsDLCListByAddress)
 		v1.GET("/assumerole", api.CreateOssKey)
+
+		v1.GET("/collection/assets", api.AssetsCollectionV2)
 	}
 
 	v2 := r.Group("/api/v2")
