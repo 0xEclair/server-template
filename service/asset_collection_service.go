@@ -82,3 +82,37 @@ func (s *AssetsCollectionService) CollectionV2() serializer.Response {
 		Data: serializer.BuildAssetCollectionNameListResponse(brc420Details, nameToInsids),
 	}
 }
+
+type CollectionDLCService struct {
+	InscriptionId string `json:"inscription_id" form:"inscription_id"`
+	Offset        int    `json:"offset" form:"offset,default=0"`
+	Limit         int    `json:"limit" form:"limit,default=1"`
+}
+
+func (s *CollectionDLCService) List() serializer.Response {
+	assets := cache.DLCToAssets[s.InscriptionId]
+
+	var res []model.Asset
+	for _, asset := range assets {
+		if asset.Cons {
+			res = append(res, asset)
+		}
+	}
+
+	cnt := len(res)
+	last := s.Offset + s.Limit
+	if last > len(res) {
+		last = len(res)
+	}
+
+	if s.Offset < len(res) {
+		res = res[s.Offset:last]
+	} else {
+		res = make([]model.Asset, 0)
+	}
+
+	return serializer.Response{
+		Code: 200,
+		Data: serializer.BuildAssetsListWithCntResponse(int64(cnt), res),
+	}
+}

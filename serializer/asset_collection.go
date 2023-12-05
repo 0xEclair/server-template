@@ -53,7 +53,7 @@ func BuildAssetCollectionNameListResponse(brc420Details []model.BRC420Detail, na
 	for _, detail := range brc420Details {
 		res := &AssetCollectionResponse{
 			Name:           detail.Name,
-			InscriptionIds: []string{detail.InscriptionId},
+			InscriptionIds: []string{detail.Tick},
 			Type:           "dlc",
 		}
 

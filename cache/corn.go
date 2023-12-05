@@ -76,6 +76,7 @@ func cronForBRC420AssetsDLC() {
 }
 
 func InitCron() {
+	cronForBRC420AssetsDLC()
 	err := Cron.AddFunc("0 * * * * *", cronForBRC420AssetsDLC)
 
 	if err != nil {
