@@ -26,6 +26,8 @@ func BuildAssetCollectionListResponse(brc420Details []model.BRC420Detail) AssetC
 
 		if detail.Tick == "e80eadea13e2175949168c279f7a47a467b6c5e00a84d45dd8ae40aefda89fe5i0" {
 			res.CollectionName = cache.DLCToAssets["dbdbc1ff9fa94d1149c240f742fa444a853b0101d3fb898376e00adb8792454di0"][0].Collection
+		} else if detail.Tick == "" {
+			res.CollectionName = "BitmapKingdomDLCBitmapTown"
 		} else {
 			if len(cache.DLCToAssets[detail.Tick]) != 0 {
 				res.CollectionName = cache.DLCToAssets[detail.Tick][0].Collection
