@@ -1,6 +1,9 @@
 package serializer
 
-import "server-template/model"
+import (
+	"fmt"
+	"server-template/model"
+)
 
 type AssetResponse struct {
 	Id            int64  `json:"id"`
@@ -78,6 +81,7 @@ func BuildAssetsListWithCntResponseDLC(cnt int64, items []model.AssDLC) *AssetsD
 		inscriptions = append(inscriptions, inscription)
 	}
 
+	fmt.Println(len(inscriptions))
 	return &AssetsDLCListResponse{
 		Count: cnt,
 		Items: inscriptions,

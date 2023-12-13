@@ -397,13 +397,13 @@ func (s *AssetsListService) ListWithOssAndBRC420V3() serializer.Response {
 				// assets = append(assets, cache.DLCToAssets[item.InscriptionId]...)
 				// cnt += len(cache.DLCToAssets[item.InscriptionId])
 				for _, ass := range cache.DLCToAssets[item.InscriptionId] {
-					if ass.Category == s.Category && s.Category != "" {
+					if ass.Collection == s.Collection && s.Collection != "" {
 						as = append(as, model.AssDLC{
 							Asset: ass,
 							DLC:   true,
 						})
 						cnt += 1
-					} else if ass.Collection == s.Collection && s.Collection != "" {
+					} else if ass.Category == s.Category && s.Category != "" {
 						as = append(as, model.AssDLC{
 							Asset: ass,
 							DLC:   true,
@@ -416,6 +416,12 @@ func (s *AssetsListService) ListWithOssAndBRC420V3() serializer.Response {
 						})
 						cnt += 1
 					} else if ass.Type == s.Type && s.Type != "" {
+						as = append(as, model.AssDLC{
+							Asset: ass,
+							DLC:   true,
+						})
+						cnt += 1
+					} else {
 						as = append(as, model.AssDLC{
 							Asset: ass,
 							DLC:   true,
