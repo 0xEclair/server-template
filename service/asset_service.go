@@ -398,11 +398,14 @@ func (s *AssetsListService) ListWithOssAndBRC420V3() serializer.Response {
 				// cnt += len(cache.DLCToAssets[item.InscriptionId])
 				for _, ass := range cache.DLCToAssets[item.InscriptionId] {
 					if ass.Collection == s.Collection && s.Collection != "" {
-						as = append(as, model.AssDLC{
-							Asset: ass,
-							DLC:   true,
-						})
-						cnt += 1
+						for _, asss := range cache.DLCToAssets[item.InscriptionId] {
+							as = append(as, model.AssDLC{
+								Asset: asss,
+								DLC:   true,
+							})
+							cnt += 1
+						}
+						break
 					} else if ass.Category == s.Category && s.Category != "" {
 						as = append(as, model.AssDLC{
 							Asset: ass,
