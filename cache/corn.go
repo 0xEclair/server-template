@@ -31,6 +31,9 @@ func cronForBRC420AssetsDLC() {
 	Postgres.Where("id > ? and type = '' and tag = '' and category = '' and collection = ''", startId).Find(&assets)
 
 	for _, asset := range assets {
+		if asset.InscriptionId == "dba39cfbf18c2891d088393ff15caf9d7b49c199baffe41659261af7ffba15bei0" {
+			continue
+		}
 		oss_url := "https://inscriptions.oss-ap-southeast-1.aliyuncs.com/inscriptions/" + asset.InscriptionId
 
 		body := ""
