@@ -212,6 +212,7 @@ func (s *DomainService) ListWithBitmap() serializer.Response {
 
 	var verifiedInscriptions []model.Inscription
 	var unverifiedInscriptions []model.Inscription
+	bitmapSet := make(map[int64]bool)
 	for _, inscription := range tempInscriptions {
 		if strings.HasSuffix(inscription.Content, ".sats") {
 			continue
@@ -331,6 +332,17 @@ func (s *DomainService) ListWithBitmap() serializer.Response {
 
 			continue
 		}
+
+		if strings.HasSuffix(inscription.Content, ".bitmap") {
+			var insc model.Inscription
+			config.Postgres.Select("id").Where("content = ?", inscription.Content).First(&insc)
+			if inscription.Id == insc.Id {
+				bitmapSet[insc.Id] = true
+				verifiedInscriptions = append(verifiedInscriptions, inscription)
+			}
+
+			continue
+		}
 	}
 
 	sats, err := bestinslot.WalletSats(s.Address)
@@ -352,6 +364,9 @@ func (s *DomainService) ListWithBitmap() serializer.Response {
 	config.Postgres.Table("bitmap_holder").Where("address = ?", s.Address).Find(&bitmaps)
 
 	for _, bitmap := range bitmaps {
+		if bitmapSet[bitmap.Id] == true {
+			continue
+		}
 		inscription := model.Inscription{
 			Id:            bitmap.Id,
 			InscriptionId: bitmap.InscriptionId,
